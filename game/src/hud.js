@@ -28,6 +28,13 @@ export function drawHud(ctx, game) {
   ctx.fillStyle = PALETTE.hudBar; ctx.fillRect(0, 688, 1280, 32);
   ctx.textAlign = 'left'; ctx.font = `bold 12px ${FONT_UI}`; ctx.fillStyle = PALETTE.text;
   ctx.fillText(`Gadgets — [Q] Coin decoy ×${p.gadgets.coin}   [E] Snuff-cap ×${p.gadgets.snuff}   [F] Perfume puff ×${p.gadgets.perfume}${p.perfume > 0 ? ` (cloud ${p.perfume.toFixed(1)}s)` : ''}`, 12, 708);
+  // Gold rules framing both HUD bars + a pulsing alarm jewel when the house is awake.
+  ctx.fillStyle = 'rgba(201,164,78,0.65)'; ctx.fillRect(0, 42, 1280, 2); ctx.fillRect(0, 686, 1280, 2);
+  if (game.alarm > 4) {
+    ctx.fillStyle = game.alarm > 55 ? PALETTE.danger : '#ffd23e';
+    ctx.beginPath(); ctx.arc(416, 27, 5 + Math.sin(game.time * 6) * 1.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = PALETTE.text; ctx.font = `bold 10px ${FONT_UI}`; ctx.textAlign = 'left'; ctx.fillText('!', 414, 30);
+  }
   ctx.font = `11px ${FONT_UI}`; ctx.fillStyle = PALETTE.muted;
   ctx.fillText('Legend: pale calm · yellow wary · red ALARM · ? / ! markers · ✿ Orchid · ◆ loot · ❀ bed cover', 470, 708);
   ctx.textAlign = 'right';

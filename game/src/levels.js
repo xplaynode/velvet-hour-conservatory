@@ -23,8 +23,11 @@ function plants(seed, n, avoid) {
   return out;
 }
 
+const P = (type, x, y) => ({ type, x, y });
 function wing(o) {
-  o.plants = plants(o.seed, o.plantCount || 26, [...o.walls, ...o.hedges, ...o.beds]);
+  // Denser dressing: 44 scattered plants per wing (was 26) so frames read lush, not sparse.
+  o.plants = plants(o.seed, o.plantCount || 44, [...o.walls, ...o.hedges, ...o.beds]);
+  o.props = o.props || [];
   o.treasures.forEach((t, i) => { if (!t.kind) t.kind = KINDS[i % KINDS.length]; });
   return o;
 }
@@ -122,6 +125,17 @@ export const LEVELS = [
     sentinels: [{ x: 380, y: 250, base: 0.9, sweep: 1.2, range: 290 }, { x: 900, y: 480, base: 2.8, sweep: 1.2, range: 290 }],
   }),
 ];
+// Purely decorative set dressing (no collision, no sight block): 16 props per wing, 80 total.
+// Types: palm (potted palm), statue, bench, urn, topiary — drawn richly by render.js.
+const EXTRA_PROPS = [
+  [P('palm', 60, 90), P('palm', 1220, 90), P('statue', 340, 250), P('bench', 560, 340), P('urn', 700, 240), P('topiary', 180, 380), P('palm', 1080, 300), P('bench', 380, 640), P('urn', 880, 560), P('statue', 980, 640), P('topiary', 260, 560), P('palm', 560, 80), P('urn', 120, 160), P('bench', 1120, 420), P('topiary', 760, 180), P('palm', 1020, 80)],
+  [P('palm', 60, 180), P('statue', 460, 320), P('bench', 620, 200), P('urn', 760, 560), P('topiary', 200, 460), P('palm', 1180, 300), P('bench', 340, 520), P('urn', 900, 300), P('statue', 1080, 620), P('topiary', 580, 520), P('palm', 240, 80), P('urn', 1220, 480), P('bench', 80, 340), P('topiary', 980, 80), P('palm', 700, 660), P('statue', 160, 660)],
+  [P('palm', 60, 80), P('statue', 320, 80), P('bench', 960, 80), P('urn', 80, 380), P('topiary', 1200, 380), P('palm', 480, 660), P('bench', 800, 660), P('urn', 640, 470), P('statue', 60, 540), P('topiary', 1220, 540), P('palm', 400, 200), P('bench', 880, 200), P('urn', 200, 660), P('topiary', 1080, 660), P('palm', 1220, 120), P('statue', 1080, 380)],
+  [P('palm', 60, 120), P('statue', 240, 300), P('bench', 540, 480), P('urn', 700, 300), P('topiary', 1080, 300), P('palm', 1220, 560), P('bench', 120, 480), P('urn', 400, 200), P('statue', 880, 560), P('topiary', 60, 620), P('palm', 560, 80), P('urn', 1220, 80), P('bench', 300, 660), P('topiary', 960, 660), P('palm', 180, 240), P('statue', 660, 420)],
+  [P('palm', 60, 80), P('statue', 180, 300), P('bench', 420, 480), P('urn', 860, 480), P('topiary', 1220, 80), P('palm', 1220, 420), P('bench', 180, 480), P('urn', 1100, 480), P('statue', 320, 300), P('topiary', 960, 300), P('palm', 420, 660), P('urn', 860, 660), P('bench', 60, 240), P('topiary', 1220, 240), P('palm', 700, 660), P('statue', 60, 420)],
+];
+LEVELS.forEach((l, i) => { l.props = [...l.props, ...EXTRA_PROPS[i]]; });
+export const PROP_TOTAL = LEVELS.reduce((n, l) => n + l.props.length, 0);
 export const LEVEL_COUNT = LEVELS.length;
 export const WING_NAMES = LEVELS.map((l) => l.name);
 export const SENTINEL_TOTAL = LEVELS.reduce((n, l) => n + l.sentinels.length, 0);
